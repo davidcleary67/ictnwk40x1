@@ -6,8 +6,9 @@ import sys
 import os
 import pathlib
 import shutil
+import smtplib
 from datetime import datetime
-from backupcfg import jobs, usage_msg, job_msg, logfile
+from backupcfg import jobs, usage_msg, job_msg, logfile, email
 
 # global variables
 
@@ -41,14 +42,14 @@ def do_backup(job):
     # if both source and destination exist, continue
     if not errors:
         
-        # create destination path
-        src_path = pathlib.PurePath(src)
-        dst_path = dst + "/" + src_path.name + "-" + date_string
-
         # determine if source is a file or directory
         is_a_dir = pathlib.Path(src).is_dir()
         is_a_file = pathlib.Path(src).is_file()
         
+        # create destination path
+        src_path = pathlib.PurePath(src)
+        dst_path = dst + "/" + src_path.name + "-" + date_string
+
         # backup file
         if is_a_file:
             
@@ -86,6 +87,30 @@ def do_logfile(job):
 
     file.close()
 
+# append all error messages to email and send
+def do_email(job):
+
+    global date_string
+    global messages
+
+    header = 'To: ' + email["recipient"] + '\n' + 'From: ' + email["user"] + '\n' + "Subject: Backup Error " + job + '\n'
+    email_msg = header + '\n'
+    
+    # loop through all error messages, adding them to email
+    for msg in messages:
+
+        email_msg += msg + '\n'
+
+    email_msg += '\n'
+
+    # connect to email server and send email
+    smtp_server = smtplib.SMTP(email["server"], email["port"])
+    smtp_server.ehlo()
+    smtp_server.starttls()
+    smtp_server.login(email["user"], email["pwd"])
+    smtp_server.sendmail(email["user"], email["recipient"], email_msg)
+    smtp_server.quit()
+ 
 # main program
 
 # check correct number of command line arguments
@@ -108,9 +133,9 @@ else:
         do_backup(job)
     
     # if there are errors, send error email
-    if errors:
+    if errors > 0\:
         
-        pass #do_email(job)
+        do_email(job)
         
     # output messages to logfile
     do_logfile(job)

@@ -30,7 +30,7 @@ else:
         pass #do_backup(job)
     
     # if there are errors, send error email
-    if errors > 0:
+    if errors:
         
         pass #do_email(job)
         

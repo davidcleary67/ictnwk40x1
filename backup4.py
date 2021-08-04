@@ -49,6 +49,10 @@ def do_backup(job):
         src_path = pathlib.PurePath(src)
         dst_path = dst + "/" + src_path.name + "-" + date_string
 
+        # determine if source is a file or directory
+        is_a_dir = pathlib.Path(src).is_dir()
+        is_a_file = pathlib.Path(src).is_file()
+        
         # backup file
         if is_a_file:
             
@@ -92,7 +96,7 @@ else:
         do_backup(job)
     
     # if there are errors, send error email
-    if errors > 0:
+    if errors:
         
         pass #do_email(job)
         
