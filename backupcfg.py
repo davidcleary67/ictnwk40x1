@@ -8,9 +8,9 @@ usage_msg = "Usage: python backup.py <job name from backupcfg.py>"
 job_msg = "Error: job '%s' not in jobs list"
 logfile = "/home/ec2-user/environment/ictnwk40x1/backup.log"
 
-email = {"sender": "dcleary@sunitafe.edu.au",
-         "recipient": "davidcgcleary@gmail.com",
-         "user": "davidcleary67",
-         "password": "Draconian.123456",
-         "server": "mail.smtp2go.com",
-         "port": 587}
+smtp = {"sender": "dcleary@sunitafe.edu.au",
+        "recipient": "davidcgcleary@gmail.com",
+        "server": "mail.smtp2go.com",
+        "port": 587,
+        "user": "davidcleary67",
+        "password": "Draconian.123456"}

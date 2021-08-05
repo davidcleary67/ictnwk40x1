@@ -8,7 +8,7 @@ import pathlib
 import shutil
 import smtplib
 from datetime import datetime
-from backupcfg import jobs, usage_msg, job_msg, logfile, email
+from backupcfg import jobs, usage_msg, job_msg, logfile, smtp
 
 # global variables
 
@@ -93,7 +93,7 @@ def do_email(job):
     global date_string
     global messages
 
-    header = 'To: ' + email["recipient"] + '\n' + 'From: ' + email["sender"] + '\n' + "Subject: Backup Error " + job + '\n'
+    header = 'To: ' + smtp["recipient"] + '\n' + 'From: ' + smtp["sender"] + '\n' + "Subject: Backup Error " + job + '\n'
     email_msg = header + '\n'
     
     # loop through all error messages, adding them to email
@@ -105,12 +105,12 @@ def do_email(job):
 
     # connect to email server and send email
     try:
-        smtp_server = smtplib.SMTP(email["server"], email["port"])
+        smtp_server = smtplib.SMTP(smtp["server"], smtp["port"])
         smtp_server.ehlo()
         smtp_server.starttls()
         smtp_server.ehlo()
-        smtp_server.login(email["user"], email["password"])
-        smtp_server.sendmail(email["sender"], email["recipient"], email_msg)
+        smtp_server.login(smtp["user"], smtp["password"])
+        smtp_server.sendmail(smtp["sender"], smtp["recipient"], email_msg)
         smtp_server.close()
     except Exception as e:
         pass
